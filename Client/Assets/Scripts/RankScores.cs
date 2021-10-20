@@ -9,9 +9,11 @@ using UnityEngine.UI;
 [Serializable]
 public class HighScore
 {
-    public int id;
+    public int? id;
     public string name;
     public int score;
+
+    public string md5;
 }
 
 [Serializable]
@@ -164,9 +166,12 @@ public class RankScores : MonoBehaviour
             yield break;
         }
 
-        highScore.id = 0;
+        //highScore.id = 0;
         highScore.name = name;
         highScore.score = score;
+        highScore.md5 = CalculateMD5(highScore);
+
+        Debug.Log(highScore.md5);
 
         var json = JsonUtility.ToJson(highScore);
         UnityWebRequest www = new UnityWebRequest($"http://localhost:53944/ScoreRank/UploadScore", "POST");
@@ -199,6 +204,24 @@ public class RankScores : MonoBehaviour
     private void updateResult(string text)
     {
         txt_result.text = text;
+    }
+
+    private string CalculateMD5(HighScore highScore)
+    {
+        var md5Str = $"{highScore.name}#{highScore.score}#MD5";
+
+        System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+
+        var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(md5Str));
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (var b in bytes)
+        {
+            sb.Append(b.ToString("X2"));
+        }
+
+        return sb.ToString();
     }
 
     // Update is called once per frame

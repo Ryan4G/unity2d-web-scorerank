@@ -27,7 +27,18 @@ namespace unity2d_web_scorerank_api.Models
 
                 if (highScore.ID == null)
                 {
-                    insert = true;
+                    var queryCmd = @"SELECT id, name, score FROM highscore WHERE name = @NAME";
+
+                    var matchedRecord = conn.Query<HighScore>(queryCmd, new { NAME = highScore.Name }).FirstOrDefault();
+
+                    if (matchedRecord == null)
+                    {
+                        insert = true;
+                    }
+                    else
+                    {
+                        highScore.ID = matchedRecord.ID;
+                    }
                 }
                 else
                 {

@@ -10,5 +10,7 @@ namespace unity2d_web_scorerank_api.Models
         public int? ID { get; set; }
         public string Name { get; set; }
         public int Score { get; set; }
+
+        public string MD5 { get; set; }
     }
 }
